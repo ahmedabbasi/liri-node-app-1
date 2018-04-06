@@ -23,7 +23,7 @@ if (arg[0] === "my-tweets") {
     screen_name: "oscar_bootcamp"
   };
 
-  client.get("statuses/user_timeline", {count: 20}, function(
+  client.get("statuses/user_timeline", { count: 20 }, function(
     error,
     tweets,
     response
@@ -32,9 +32,11 @@ if (arg[0] === "my-tweets") {
       console.log("========================");
       console.log("These are the last 20 tweets!.");
       console.log("========================");
-      for (var i = 0 ; i < tweets.length; i++){
+      for (var i = 0; i < tweets.length; i++) {
         console.log("------------------------");
-        console.log(tweets[i].user.name + " created this tweet on " + tweets[i].created_at);
+        console.log(
+          tweets[i].user.name + " created this tweet on " + tweets[i].created_at
+        );
         console.log("Tweet: " + tweets[i].text);
       }
       console.log("------------------------");
@@ -51,7 +53,7 @@ if (arg[0] === "spotify-this-song") {
   var songArray = arg.slice(1);
   var song = songArray.join(" ");
   var previewUrl = "https://open.spotify.com/embed/track/";
-  if (!song){
+  if (!song) {
     song = "the sign";
   }
   spotify.search({ type: "track", limit: 20, query: song }, function(
@@ -62,15 +64,14 @@ if (arg[0] === "spotify-this-song") {
       console.log("Error occurred: " + err);
     }
     var result = data.tracks.items;
-    result.forEach(function(element){
+    result.forEach(function(element) {
       console.log("=============");
       console.log("Artist Name: " + element.artists[0].name);
       console.log("Song Name: " + element.name);
       console.log("Album: " + element.album.name);
       console.log("Release Date: " + element.album.release_date);
       console.log("Preview URL: " + previewUrl + element.id);
-      
-    })
+    });
     console.log("=============");
   });
 }
@@ -78,28 +79,33 @@ if (arg[0] === "spotify-this-song") {
 if (arg[0] === "movie-this") {
   var movieArray = arg.slice(1);
   var movie = movieArray.join("+");
-  request("http://www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=trilogy", function(error, response, body) {
-  if (!error && response.statusCode === 200) {
-    //console.log(JSON.parse(body));
-    var result = JSON.parse(body);
-    var ratings = result.Ratings;
-    var rtRating = "not rated"
-    for (var key in ratings){
-      var obj = ratings[key];
-      if (obj.Source === "Rotten Tomatoes"){
-        rtRating = obj.Value;
+  if (!movie) {
+    movie = "Mr. Nobody";
+  }
+  request(
+    "http://www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=trilogy",
+    function(error, response, body) {
+      if (!error && response.statusCode === 200) {
+        var result = JSON.parse(body);
+        var ratings = result.Ratings;
+        var rtRating = "not rated";
+        for (var key in ratings) {
+          var obj = ratings[key];
+          if (obj.Source === "Rotten Tomatoes") {
+            rtRating = obj.Value;
+          }
+        }
+        console.log("=============");
+        console.log("Title: " + result.Title);
+        console.log("Year: " + result.Year);
+        console.log("IMDB Rating: " + result.imdbRating);
+        console.log("Rotten Tomatoes Rating: " + rtRating);
+        console.log("Country(s): " + result.Country);
+        console.log("Language(s): " + result.Language);
+        console.log("Plot: " + result.Plot);
+        console.log("Actors: " + result.Actors);
+        console.log("=============");
       }
     }
-    console.log("=============");
-    console.log("Title: " + result.Title);
-    console.log("Year: " + result.Year);
-    console.log("IMDB Rating: " + result.imdbRating);
-    console.log("Rotten Tomatoes Rating: " + rtRating);
-    console.log("Country(s): " + result.Country);
-    console.log("Language(s): " + result.Language);
-    console.log("Plot: " + result.Plot);
-    console.log("Actors: " + result.Actors);
-    console.log("=============");
-  }
-});
+  );
 }

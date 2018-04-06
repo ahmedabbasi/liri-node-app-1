@@ -1,8 +1,10 @@
 require("dotenv").config();
+
 var keys = require("./keys");
 var Twitter = require("twitter");
 var Spotify = require("node-spotify-api");
 var request = require("request");
+var fs = require("fs");
 
 var client = new Twitter({
   consumer_key: keys.twitter.consumer_key,
@@ -18,7 +20,38 @@ var spotify = new Spotify({
 
 var arg = process.argv.slice(2);
 
-if (arg[0] === "my-tweets") {
+function getCommand(arg) {
+  if (arg[0] === "my-tweets") {
+    getTweets();
+  } else if (arg[0] === "spotify-this-song") {
+    var songArray = arg.slice(1);
+    var song = songArray.join(" ");
+    if (!song) {
+      song = "the sign";
+    }
+    spotifySong(song);
+  } else if (arg[0] === "movie-this") {
+    var movieArray = arg.slice(1);
+    var movie = movieArray.join("+");
+    if (!movie) {
+      movie = "Mr. Nobody";
+    }
+    findMovie(movie);
+  } else if (arg[0] === "do-what-it-says") {
+    fs.readFile("random.txt", "utf8", function(error, data) {
+      if (error) {
+        console.log(error);
+      }
+      console.log(data);
+      var dataArr = data.split(",");
+      console.log(dataArr);
+    });
+  } else {
+    console.log("I have no clue what you just said...");
+  }
+}
+
+function getTweets() {
   var params = {
     screen_name: "oscar_bootcamp"
   };
@@ -49,13 +82,8 @@ if (arg[0] === "my-tweets") {
   });
 }
 
-if (arg[0] === "spotify-this-song") {
-  var songArray = arg.slice(1);
-  var song = songArray.join(" ");
+function spotifySong(song) {
   var previewUrl = "https://open.spotify.com/embed/track/";
-  if (!song) {
-    song = "the sign";
-  }
   spotify.search({ type: "track", limit: 20, query: song }, function(
     err,
     data
@@ -76,12 +104,7 @@ if (arg[0] === "spotify-this-song") {
   });
 }
 
-if (arg[0] === "movie-this") {
-  var movieArray = arg.slice(1);
-  var movie = movieArray.join("+");
-  if (!movie) {
-    movie = "Mr. Nobody";
-  }
+function findMovie(movie) {
   request(
     "http://www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=trilogy",
     function(error, response, body) {
@@ -109,3 +132,5 @@ if (arg[0] === "movie-this") {
     }
   );
 }
+
+getCommand(arg);

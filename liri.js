@@ -1,11 +1,13 @@
 require("dotenv").config();
 
+//  Set up the dependencies
 var keys = require("./keys");
 var Twitter = require("twitter");
 var Spotify = require("node-spotify-api");
 var request = require("request");
 var fs = require("fs");
 
+//  Set up the keys
 var client = new Twitter({
   consumer_key: keys.twitter.consumer_key,
   consumer_secret: keys.twitter.consumer_secret,
@@ -18,8 +20,10 @@ var spotify = new Spotify({
   secret: keys.spotify.secret
 });
 
+//  Set up the input
 var arg = process.argv.slice(2);
 
+//  Process the input
 function getCommand(arg) {
   if (arg[0] === "my-tweets") {
     getTweets();
@@ -42,15 +46,15 @@ function getCommand(arg) {
       if (error) {
         console.log(error);
       }
-      console.log(data);
       var dataArr = data.split(",");
-      console.log(dataArr);
+      getCommand(dataArr);
     });
   } else {
     console.log("I have no clue what you just said...");
   }
 }
 
+//  Get Tweets?
 function getTweets() {
   var params = {
     screen_name: "oscar_bootcamp"
@@ -82,6 +86,7 @@ function getTweets() {
   });
 }
 
+//  Must be to find a song in spotify...
 function spotifySong(song) {
   var previewUrl = "https://open.spotify.com/embed/track/";
   spotify.search({ type: "track", limit: 20, query: song }, function(
@@ -104,6 +109,7 @@ function spotifySong(song) {
   });
 }
 
+//  Only finds one movie... not sure if I could make it find more than one of the same name yet
 function findMovie(movie) {
   request(
     "http://www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=trilogy",
@@ -133,4 +139,5 @@ function findMovie(movie) {
   );
 }
 
+//  Start the show
 getCommand(arg);

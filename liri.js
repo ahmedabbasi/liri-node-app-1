@@ -82,19 +82,24 @@ if (arg[0] === "movie-this") {
   if (!error && response.statusCode === 200) {
     //console.log(JSON.parse(body));
     var result = JSON.parse(body);
-    var ratings = result.Ratings[0];
-    var rtRating = ratings.filter(function(obj){
-      return obj.Source == "Rotten Tomatoes";
-    });
-    console.log(result.Title);
-    console.log(result.Year);
-    console.log(result.imdbRating);
-    console.log(rtRating);
-    console.log(result.Country);
-    console.log(result.Language);
-    console.log(result.Plot);
-    console.log(result.Actors);
-    
+    var ratings = result.Ratings;
+    var rtRating = "not rated"
+    for (var key in ratings){
+      var obj = ratings[key];
+      if (obj.Source === "Rotten Tomatoes"){
+        rtRating = obj.Value;
+      }
+    }
+    console.log("=============");
+    console.log("Title: " + result.Title);
+    console.log("Year: " + result.Year);
+    console.log("IMDB Rating: " + result.imdbRating);
+    console.log("Rotten Tomatoes Rating: " + rtRating);
+    console.log("Country(s): " + result.Country);
+    console.log("Language(s): " + result.Language);
+    console.log("Plot: " + result.Plot);
+    console.log("Actors: " + result.Actors);
+    console.log("=============");
   }
 });
 }

@@ -7,8 +7,8 @@ var Spotify = require("node-spotify-api");
 var request = require("request");
 var fs = require("fs");
 
-var separatorThick = "========================" + "\n";
-var separatorThin = "------------------------" + "\n";
+var separatorThick = "========================";
+var separatorThin = "------------------------";
 
 
 //  Set up the keys
@@ -73,10 +73,11 @@ function getTweets() {
 
       var userResponse = [];
 
+      userResponse.push("!!!!!!!!!!!!Tweets!!!!!!!!!!!!")
       userResponse.push(separatorThick);
       for (var i = 0; i < tweets.length; i++) {
-        var nameLine = tweets[i].user.name + " created this tweet on " + tweets[i].created_at + "\n";
-        var tweetLine = "Tweet: " + tweets[i].text + "\n";
+        var nameLine = tweets[i].user.name + " created this tweet on " + tweets[i].created_at;
+        var tweetLine = "Tweet: " + tweets[i].text;
 
         userResponse.push(separatorThin);
         userResponse.push(nameLine);
@@ -86,7 +87,7 @@ function getTweets() {
       userResponse.push(separatorThick);
 
       appendLog(userResponse);
-      console.log(userResponse);
+      console.log(userResponse.join("\n"));
 
     } else {
       console.log("Error occurred: " + error);
@@ -106,16 +107,18 @@ function spotifySong(song) {
     }
     var result = data.tracks.items;
 
+    var userResponse = [];
+    userResponse.push("!!!!!!!!!!!!Songs!!!!!!!!!!!!")
+    userResponse.push(separatorThick);
+
     result.forEach(function(element) {
-      var userResponse = [];
+      var artistLine = "Artist Name: " + element.artists[0].name;
+      var songLine = "Song Name: " + element.name;
+      var albumLine = "Album: " + element.album.name;
+      var releaseLine = "Release Date: " + element.album.release_date;
+      var previewLine = "Preview URL: " + previewUrl + element.id;
 
-      var artistLine = "Artist Name: " + element.artists[0].name + "\n";
-      var songLine = "Song Name: " + element.name + "\n";
-      var albumLine = "Album: " + element.album.name + "\n";
-      var releaseLine = "Release Date: " + element.album.release_date + "\n";
-      var previewLine = "Preview URL: " + previewUrl + element.id + "\n";
-
-      userResponse.push(separatorThick);
+      userResponse.push(separatorThin);
       userResponse.push(artistLine);
       userResponse.push(songLine);
       userResponse.push(albumLine);
@@ -124,7 +127,7 @@ function spotifySong(song) {
       userResponse.push(separatorThick);
 
       appendLog(userResponse);
-      console.log(userResponse);
+      console.log(userResponse.join("\n"));
 
     });
   });
@@ -155,6 +158,7 @@ function findMovie(movie) {
           }
         }
 
+        userResponse.push("!!!!!!!!!!!!Movie!!!!!!!!!!!!")
         userResponse.push(separatorThick);
         userResponse.push(titleLine);
         userResponse.push(yearLine);
@@ -166,18 +170,16 @@ function findMovie(movie) {
         userResponse.push(actorLine);
         userResponse.push(separatorThick);
 
-        for (var i = 0; i<userResponse.length; i++){
-          appendLog(userResponse[i])
-          console.log(userResponse[i]);
-
-        }
+          appendLog(userResponse)
+          console.log(userResponse.join("\n"));
       }
     });
 }
 
 
 function appendLog(response){
-  fs.appendFile("log.txt", response + "\n" , function(err) {
+  var logText = response.join("\n");
+  fs.appendFile("log.txt", logText, function(err) {
     if (err) {
       return console.log(err);
     }

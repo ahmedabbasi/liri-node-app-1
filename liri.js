@@ -54,7 +54,7 @@ function getCommand(arg) {
             getCommand(dataArr);
         });
     } else {
-        console.log("I have no clue what you just said...");
+        console.log("I have no clue what you just said... please try again.");
     }
 }
 
